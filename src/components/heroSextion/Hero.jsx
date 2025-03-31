@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import gsap from "gsap";
 import CanvasAnimation from "../canvas/CanvasAnimation";
 import About from "../About";
+import Navbar from "./Navbar";
 
 const Hero = () => {
   const [showOverlay, setShowOverlay] = useState(true);
@@ -92,22 +93,22 @@ const Hero = () => {
         ease: "Power2.out",
       });
 
-      tl.from(h1Ref.current, {
+      gsap.from(h1Ref.current, {
         opacity: 0,
-        x: -60,
-        ease: "Power2.out",
+        y: 50,
+        duration: 1,
       });
 
-      tl.from(h2Ref.current, {
+      gsap.from(h2Ref.current, {
         opacity: 0,
-        x: -60,
-        ease: "Power2.out",
+        y: 50,
+        duration: 1,
       });
 
-      tl.from(h3Ref.current, {
+      gsap.from(h3Ref.current, {
         opacity: 0,
-        x: 60,
-        ease: "Power2.out",
+        y: 50,
+        duration: 1,
       });
     }
   }, [showOverlay]);
@@ -199,161 +200,166 @@ const Hero = () => {
   };
 
   return (
-    <div className="bg-black">
-      {/* Fixed height for Hero section */}
-      <div className="relative h-screen overflow-hidden">
-        {/* Canvas Animation Background */}
-        <div className="fixed inset-0 z-0">
-          <CanvasAnimation />
-        </div>
-        
-        {/* Photo Frame Overlay */}
-        {showOverlay && (
+    <div className="bg-black min-h-screen">
+      {/* Canvas Animation Background */}
+      <div className="fixed inset-0 z-0">
+        <CanvasAnimation />
+      </div>
+      
+      {/* Photo Frame Overlay */}
+      {showOverlay && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center"
+          style={{ 
+            opacity: isAnimating ? '0' : '1',
+            transition: 'opacity 800ms',
+          }}
+        >
           <div 
-            className="fixed inset-0 z-[100] flex items-center justify-center"
-            style={{ 
+            ref={frameRef}
+            className="relative"
+            style={{
+              maxWidth: '90%', 
+              width: '500px',  // Wider frame
+              height: '670px', // Taller height for vertical frame
+              transition: 'all 800ms',
+              transform: isAnimating ? 'scale(1.1)' : 'scale(1)',
               opacity: isAnimating ? '0' : '1',
-              transition: 'opacity 800ms',
+              ...frameStyle
             }}
           >
-            <div 
-              ref={frameRef}
-              className="relative"
-              style={{
-                maxWidth: '90%', 
-                width: '500px',  // Wider frame
-                height: '670px', // Taller height for vertical frame
-                transition: 'all 800ms',
-                transform: isAnimating ? 'scale(1.1)' : 'scale(1)',
-                opacity: isAnimating ? '0' : '1',
-                ...frameStyle
-              }}
-            >
-              {/* Flower images positioned around the frame */}
-              {flowerPositions.map((position, index) => {
-                // Calculate random size between 100px and 200px (wider range)
-                const size = 100 + Math.floor(Math.random() * 100);
-                
-                // Randomly select one of the flower images
-                const flowerImage = flowerImages[Math.floor(Math.random() * flowerImages.length)];
-                
-                return (
-                  <div 
-                    key={index}
-                    ref={el => flowerRefs.current[index] = el}
-                    className="absolute z-10"
-                    style={{
-                      ...position,
-                      width: `${size}px`,
-                      height: `${size}px`,
-                      opacity: 0, // Start invisible
-                      visibility: "hidden", // Hide initially
-                      pointerEvents: 'none',
-                      transformOrigin: 'center', // Set transform origin for better rotation
-                      filter: `brightness(${0.8 + Math.random() * 0.4})` // Random brightness for depth (wider range)
-                    }}
-                  >
-                    {/* Using actual flower images with random size and rotation */}
-                    <img 
-                      src={flowerImage} 
-                      alt="Flower"
-                      className="w-full h-full object-contain"
-                      style={{ 
-                        filter: "drop-shadow(0 0 12px rgba(255,255,255,0.4))",
-                        transform: `rotate(${Math.random() * 360}deg)` // Random rotation
-                      }}
-                    />
-                  </div>
-                );
-              })}
+            {/* Flower images positioned around the frame */}
+            {flowerPositions.map((position, index) => {
+              // Calculate random size between 100px and 200px (wider range)
+              const size = 100 + Math.floor(Math.random() * 100);
               
-              {/* Just the button - no other content */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <button
-                  onClick={handleEnterClick}
-                  className="bg-transparent text-white font-bold py-4 px-14 rounded-full transition-all transform hover:scale-105 border-2 border-white text-2xl tracking-widest backdrop-blur-sm hover:backdrop-blur"
+              // Randomly select one of the flower images
+              const flowerImage = flowerImages[Math.floor(Math.random() * flowerImages.length)];
+              
+              return (
+                <div 
+                  key={index}
+                  ref={el => flowerRefs.current[index] = el}
+                  className="absolute z-10"
+                  style={{
+                    ...position,
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    opacity: 0, // Start invisible
+                    visibility: "hidden", // Hide initially
+                    pointerEvents: 'none',
+                    transformOrigin: 'center', // Set transform origin for better rotation
+                    filter: `brightness(${0.8 + Math.random() * 0.4})` // Random brightness for depth (wider range)
+                  }}
                 >
-                  Dive In
-                </button>
-              </div>
+                  {/* Using actual flower images with random size and rotation */}
+                  <img 
+                    src={flowerImage} 
+                    alt="Flower"
+                    className="w-full h-full object-contain"
+                    style={{ 
+                      filter: "drop-shadow(0 0 12px rgba(255,255,255,0.4))",
+                      transform: `rotate(${Math.random() * 360}deg)` // Random rotation
+                    }}
+                  />
+                </div>
+              );
+            })}
+            
+            {/* Just the button - no other content */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <button
+                onClick={handleEnterClick}
+                className="bg-transparent text-white font-bold py-4 px-14 rounded-full transition-all transform hover:scale-105 border-2 border-white text-2xl tracking-widest backdrop-blur-sm hover:backdrop-blur"
+              >
+                Dive In
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Hero Section with Navbar */}
-        {!showOverlay && (
-          <>
-            {/* Navbar */}
-            <div className="fixed top-0 left-0 w-full z-50 bg-black/10 backdrop-blur-sm flex justify-between px-8 items-center py-6">
-              {/* logo */}
-              <div>
-                <img ref={logoRef} className="w-40" src="logo2.png" alt="logo" />
-              </div>
-              {/* nav-menu */}
-              <div className="flex gap-10">
-                {[
-                  { label: "Home", path: "#" },
-                  { label: "About", path: "#" },
-                  { label: "Accommodation", path: "#" },
-                  { label: "Gallery", path: "#" },
-                  { label: "Contact", path: "#" },
-                ].map((item, index) => (
-                  <Link
-                    key={index}
-                    to={item.path}
-                    ref={(el) => (menuItemsRef.current[index] = el)}
-                    className="text-xl text-white hover:text-gray-200 transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-              {/* button */}
-              <div>
-                <button
-                  ref={buttonRef}
-                  className="text-xl bg-transparent text-white border border-white hover:bg-white hover:text-black transition-colors rounded-2xl px-6 py-2"
-                >
-                  Book Now
-                </button>
-              </div>
+      {/* Hero Section with Navbar */}
+      {!showOverlay && (
+        <>
+          {/* Navbar */}
+          <div className="fixed top-0 left-0 w-full z-50 bg-black/10 backdrop-blur-sm flex justify-between px-8 items-center py-6">
+            {/* logo */}
+            <div>
+              <img ref={logoRef} className="w-40" src="logo2.png" alt="logo" />
             </div>
+            {/* nav-menu */}
+            <div className="flex gap-10">
+              {[
+                { label: "Home", path: "#" },
+                { label: "About", path: "#" },
+                { label: "Accommodation", path: "#" },
+                { label: "Gallery", path: "#" },
+                { label: "Contact", path: "#" },
+              ].map((item, index) => (
+                <Link
+                  key={index}
+                  to={item.path}
+                  ref={(el) => (menuItemsRef.current[index] = el)}
+                  className="text-xl text-white hover:text-gray-200 transition-colors"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+            {/* button */}
+            <div>
+              <button
+                ref={buttonRef}
+                className="text-xl bg-transparent text-white border border-white hover:bg-white hover:text-black transition-colors rounded-2xl px-6 py-2"
+              >
+                Book Now
+              </button>
+            </div>
+          </div>
+
+          {/* Hero Content */}
+          <div className="relative  w-full h-screen overflow-hidden">
+            
+          
 
             {/* Hero Content */}
-            <div className="relative w-full h-screen overflow-hidden">
-              {/* Add overlay for better text contrast */}
-              <div className="absolute inset-0 bg-black/50"></div>
+            <div className="absolute inset-0 z-10  gap-y-10 flex flex-col items-center justify-center text-white">
+            <h5
+                ref={h1Ref}
+                className="text-xl font-semibold uppercase tracking-wider"
+              >
+               ⭐ ⭐ ⭐ ⭐ ⭐
+              </h5>
+              <h5
+                ref={h1Ref}
+                className="text-xl font-semibold uppercase tracking-wider"
+              >
+                unique place to relax & enjoy
+              </h5>
+              <h1
+                ref={h2Ref}
+                className="text-5xl md:text-7xl font-bold mb-2 uppercase"
+              >
+                enjoy a luxury
+              </h1>
+              <h1
+                ref={h3Ref}
+                className="text-5xl md:text-7xl font-bold uppercase"
+              >
+                experience
+              </h1>
 
-              {/* Hero Content */}
-              <div className="absolute inset-0 z-10 flex flex-col justify-center text-white">
-                <h5
-                  ref={h1Ref}
-                  className="text-xl font-semibold uppercase px-[33%] tracking-wider"
-                >
-                  welcome to river ranch
-                </h5>
-                <h1
-                  ref={h2Ref}
-                  className="text-5xl md:text-7xl font-bold mb-2 px-[33%] uppercase"
-                >
-                  treasure
-                </h1>
-                <h1
-                  ref={h3Ref}
-                  className="text-5xl md:text-7xl w-full font-bold uppercase pl-[52%]"
-                >
-                  your holiday
-                </h1>
-              </div>
+              <button ref={buttonRef} className="border-white px-6 py-3 mt-10 w-50 border-1">Book now</button>
             </div>
-          </>
-        )}
-      </div>
-
+          </div>
+        </>
+      )}
+      
       {/* About Section */}
       <About /> {/* This will be directly below the Hero section */}
     </div>
   );
 };
 
-export default Hero;
+export default Hero;  
