@@ -131,8 +131,10 @@ const Hero = () => {
     backgroundSize: "contain", // Changed from cover to contain
     backgroundRepeat: "no-repeat",
     backgroundPosition: "center",
-    height: "100%",  // Adjusted to match frame proportions
-    width: "100%",
+    height: "670px",  // Adjusted to match frame proportions
+    width: "670px",
+    backgroundSize: "cover",  // Ensures image covers the full frame
+   
     
   };
   return (
