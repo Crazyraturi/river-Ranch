@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
-const CanvasAnimation = () => {
+const CanvasAnimation = ({ frameSpeed, quality }) => {
   const canvasRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const images = useRef([]);
@@ -17,8 +17,8 @@ const CanvasAnimation = () => {
     
     // Set canvas dimensions and handle resizing
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth * quality; // Increase width based on quality
+      canvas.height = window.innerHeight * quality; // Increase height based on quality
       
       // If we have a loaded image, redraw it
       if (images.current.length > 0 && images.current[0].complete) {
@@ -82,7 +82,7 @@ const CanvasAnimation = () => {
         // Create a scrollable area for the animation
         const scrollContainer = document.createElement('div');
         scrollContainer.className = 'scroll-container';
-        scrollContainer.style.height = '300vh'; // Reduced to 3x viewport height
+        scrollContainer.style.height = '300vh'; // Height for scroll area
         scrollContainer.style.position = 'absolute';
         scrollContainer.style.width = '100%';
         scrollContainer.style.top = '100vh'; // Start after first viewport
@@ -97,7 +97,7 @@ const CanvasAnimation = () => {
             trigger: scrollContainer,
             start: "top bottom",
             end: "bottom top",
-            scrub: 1,
+            scrub: frameSpeed, // Adjust scrub speed based on frameSpeed prop
             markers: false,
             onUpdate: self => {
               const progress = self.progress;
@@ -126,7 +126,7 @@ const CanvasAnimation = () => {
         context.clearRect(0, 0, canvas.width, canvas.height);
       }
     };
-  }, []);
+  }, [frameSpeed, quality]);
   
   return (
     <div className="w-full h-screen fixed top-0 left-0 bg-zinc-900">
